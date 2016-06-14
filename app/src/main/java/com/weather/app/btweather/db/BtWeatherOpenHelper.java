@@ -27,7 +27,7 @@ public class BtWeatherOpenHelper extends SQLiteOpenHelper {
             + "province_id integer)";
 
     /**
-     * Country表建表语句
+     * County表建表语句
      */
     public static final String CREATE_COUNTY = "create table County ("
             + "id integer primary key autoincrement, "

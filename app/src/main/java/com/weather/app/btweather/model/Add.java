@@ -6,5 +6,6 @@ package com.weather.app.btweather.model;
 public class Add {
     public void out(){
         System.out.println("new class out!");
+        System.out.println("change the class");
     }
 }

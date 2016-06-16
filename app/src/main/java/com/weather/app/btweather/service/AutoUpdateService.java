@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import com.weather.app.btweather.receiver.AutoUpdateReceiver;
 import com.weather.app.btweather.util.HttpCallbackListener;
 import com.weather.app.btweather.util.HttpUtil;
 import com.weather.app.btweather.util.Utility;

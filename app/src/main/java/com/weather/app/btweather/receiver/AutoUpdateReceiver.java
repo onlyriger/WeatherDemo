@@ -1,7 +1,6 @@
-package com.weather.app.btweather.service;
+package com.weather.app.btweather.receiver;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 

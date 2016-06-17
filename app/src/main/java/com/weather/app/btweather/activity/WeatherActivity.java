@@ -67,7 +67,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         temp1Text = (TextView)findViewById(R.id.temp1);
         temp2Text = (TextView)findViewById(R.id.temp2);
         currentDateText = (TextView)findViewById(R.id.current_date);
-        switchCity = (Button)findViewById(R.id.swithc_city);
+        switchCity = (Button)findViewById(R.id.switch_city);
         refreshWeather = (Button)findViewById(R.id.refresh_weather);
         switchCity.setOnClickListener(this);
         refreshWeather.setOnClickListener(this);
@@ -95,7 +95,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     /**
      * 查询天气代号对应的天气
      */
-    private void queryWeahterInfo(String weatherCode){
+    private void queryWeatherInfo(String weatherCode){
         String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
         queryFromServer(address, "weatherCode");
     }
@@ -112,7 +112,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                     String[] array = response.split("\\|");
                     if (array != null && array.length == 2){
                         String weatherCode = array[1];
-                        queryWeahterInfo(weatherCode);
+                        queryWeatherInfo(weatherCode);
                     } else if ("weatherCode".equals(type)){
                         Utility.handleWeatherResponse(WeatherActivity.this,response);
                         runOnUiThread(new Runnable() {
@@ -159,7 +159,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
       switch(v.getId()){
-          case R.id.swithc_city:
+          case R.id.switch_city:
               Intent intent = new Intent(this,ChooseAreaActivity.class);
               intent.putExtra("from_weather_activity",true);
               startActivity(intent);
@@ -170,7 +170,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
               SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
               String weatherCode = prefs.getString("weather_code","");
               if (!TextUtils.isEmpty(weatherCode)){
-                  queryWeahterInfo(weatherCode);
+                  queryWeatherInfo(weatherCode);
               }
           default:
               break;

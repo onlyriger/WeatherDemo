@@ -159,7 +159,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         cityNameText.setVisibility(TextView.VISIBLE);
 
         Intent intent = new Intent(this, AutoUpdateService.class);
-        startActivity(intent);
+        startService(intent);
     }
 
     @Override

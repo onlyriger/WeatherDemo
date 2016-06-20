@@ -12,9 +12,9 @@
         <Button
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/home"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:background="@drawable/home2"
             android:id="@+id/switch_city"/>
 
         <TextView
@@ -30,8 +30,9 @@
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/refresh"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/refresh2"
             android:id="@+id/refresh_weather"/>
     </RelativeLayout>
 

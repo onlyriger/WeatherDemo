@@ -98,6 +98,7 @@ public class ChooseAreaActivity extends Activity {
                     } else if (currentLevel == LEVEL_COUNTY){
                         String countyCode = countyList.get(position).getCountyCode();
                         Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+                        intent.putExtra("county_code",countyCode);
                         startActivity(intent);
                         finish();
                     }

@@ -45,22 +45,22 @@ public class ChooseAreaActivity extends Activity {
     private BtWeatherDB btWeatherDB;
     private List<String> dataList = new ArrayList<String>();
 
-    //省列表
+    // 省列表
     private List<Province> provinceList;
 
-    //市列表
+    // 市列表
     private List<City> cityList;
 
-    //县列表
+    // 县列表
     private List<County> countyList;
 
-    //选中的省份
+    // 选中的省份
     private Province selectedProvince;
 
-    //选中的城市
+    // 选中的城市
     private City selectedCity;
 
-    //当前选中的级别
+    // 当前选中的级别
     private int currentLevel;
 
     /**
@@ -70,7 +70,7 @@ public class ChooseAreaActivity extends Activity {
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        isFromWeatherActivity = getIntent().getBooleanExtra("from_weatehr_activity",false);
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity",false);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         // 已经选择了城市且不是从WeatherActivity跳转过来,才会直接跳转到WeatherActivity
         if (prefs.getBoolean("city_selected",false) && !isFromWeatherActivity){
@@ -103,7 +103,7 @@ public class ChooseAreaActivity extends Activity {
                     }
                 }
         });
-        queryProvinces();   //加载省级数据
+        queryProvinces();   // 加载省级数据
     }
 
     /**

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.socks.library.KLog;
 import com.weather.app.btweather.R;
 import com.weather.app.btweather.service.AutoUpdateService;
 import com.weather.app.btweather.util.HttpCallbackListener;
@@ -24,6 +26,7 @@ import org.w3c.dom.Text;
  */
 public class WeatherActivity extends Activity implements View.OnClickListener {
 
+    private static final String TAG = WeatherActivity.class.getSimpleName();
     private LinearLayout weatherInfoLayout;
 
     //用于显示城市名
@@ -96,7 +99,9 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
      * 查询天气代号对应的天气
      */
     private void queryWeatherInfo(String weatherCode){
-        String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
+        //String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
+        String address = "http://www.weather.com.cn/adat/cityinfo/" + weatherCode + ".html";
+        KLog.v(TAG,"address = ");
         queryFromServer(address, "weatherCode");
     }
 
@@ -114,6 +119,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                         String weatherCode = array[1];
                         queryWeatherInfo(weatherCode);
                     } else if ("weatherCode".equals(type)){
+                        KLog.v("weather start");
                         Utility.handleWeatherResponse(WeatherActivity.this,response);
                         runOnUiThread(new Runnable() {
                             @Override

@@ -65,10 +65,13 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
      */
     private Button refreshWeather;
 
+    /**
+     * 数据库
+     */
     SQLiteDatabase db = null;
 
-    public static final String DATABASE_FILENAME = "citychina";
-    public static final String PACKAGE_NAME = "com.weather.db";
+    public static final String DATABASE_FILENAME = "citychina1";
+    public static final String PACKAGE_NAME = "com.weather.db1";
     public static final String DATABASE_PATH = "/data" + Environment.getDataDirectory().getAbsolutePath() +
             "/" + PACKAGE_NAME;
 
@@ -77,7 +80,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         super.onCreate(saveInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.weather_layout);
-        KLog.v(TAG, "WEATHER RUN...");
         // 初始化控件
         weatherInfoLayout = (LinearLayout) findViewById(R.id.weather_info_layout);
         cityNameText = (TextView) findViewById(R.id.city_name);
@@ -133,45 +135,63 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
 //        KLog.v(TAG,"weatherdata ============ " + weatherdata);
 //        queryWeatherInfo(weatherdata);
 
-        copyDB();
         String weatherdata = null;
-        Cursor cursor = db.query("city_table",new String[]{"CITY_ID","WEATHER_ID"},null, null, null, null, null);
+        String selection = "CITY_ID=?" ;
+        String[] selectionArgs = new  String[]{ wt_id };
+        copyDataBase();
+
+        Cursor cursor = db.query("city_table",new String[]{"WEATHER_ID"},selection, selectionArgs, null, null, null);
         while (cursor.moveToNext()){
-            weatherdata = cursor.getString(cursor.getColumnIndex("CITY_ID"));
+            weatherdata = cursor.getString(0);
+            KLog.v(TAG,"succeed  = " + weatherdata);
             if (wt_id == weatherdata){
-                weatherdata = cursor.getString(cursor.getColumnIndex("WEATHER_ID"));
+                //weatherdata = cursor.getString(cursor.getColumnIndex("WEATHER_ID"));
+                break;
             }
         }
         KLog.v(TAG,"weatherdata ============ " + weatherdata);
-        queryWeatherInfo(weatherdata);
+        String wtData = (String) weatherdata;
+        queryWeatherInfo(wtData);
+        KLog.v(TAG,"end ====  ");
     }
 
-    private void copyDB(){
+    private void copyDataBase(){
         try {
-            String weatherfileName = DATABASE_PATH + "/" + DATABASE_FILENAME;
+//            String weatherfileName = DATABASE_PATH + "/" + DATABASE_FILENAME;
+            String weatherfileName = getCacheDir() + "/" + DATABASE_FILENAME;
             File dir = new File(DATABASE_PATH);
             if (!dir.exists()){
+                KLog.v(TAG,"dir == " + dir);
                 dir.mkdir();
             }
-
-            if (!(new File(weatherfileName)).exists()){
-                InputStream is = getResources().openRawResource(R.raw.citychina);
+          //  if (!(new File(weatherfileName)).exists()) {
+                KLog.v(TAG,"weatherfileName == " + weatherfileName);
+                try {
+                InputStream is = this.getResources().openRawResource(R.raw.citychina);
+                KLog.v(TAG,"XXXXXXX");
                 FileOutputStream fos = new FileOutputStream(weatherfileName);
+                KLog.v(TAG,"aaaaaa");
                 byte[] buffer = new byte[8192];
+                KLog.v(TAG,"yyyyyyy");
                 int count = 0;
-                while ((count = is.read(buffer)) > 0){
+                while ((count = is.read(buffer)) > 0) {
+                    KLog.v(TAG,"MMMMMM");
                     fos.write(buffer,0,count);
                 }
+                KLog.v(TAG,"bbbbbb");
                 fos.close();
                 is.close();
-            }
+                } catch (Exception e ){
+                    KLog.v(TAG,"e  == " + e.toString());
+                }
+          //  }
+            KLog.v(TAG,"CCCCCC");
             db = SQLiteDatabase.openOrCreateDatabase(
                     weatherfileName, null);
-
-        } catch (Exception e){
+            KLog.v(TAG,"wtfilename = " + weatherfileName);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -181,7 +201,9 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     private void queryWeatherInfo(String weatherCode) {
         String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
         //String address = "http://www.weather.com.cn/adat/cityinfo/" + weatherCode + ".html";
+        KLog.v(TAG,"query address = " + address);
         queryFromServer(address, "weatherCode");
+        KLog.v(TAG,"queryFromServer end");
     }
 
     /**
@@ -191,6 +213,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
+                KLog.v("query from server onFinish 111111111");
                 if ("countyCode".equals(type)) {
                     // 从服务器返回的数据中解析出天气代号
                     String[] array = response.split("\\|");
@@ -198,6 +221,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                         String weatherCode = array[1];
                         queryWeatherInfo(weatherCode);
                     } else if ("weatherCode".equals(type)) {
+                        KLog.v("query from server onFinish 222222");
                         KLog.v("weather start");
                         Utility.handleWeatherResponse(WeatherActivity.this, response);
                         runOnUiThread(new Runnable() {
@@ -246,12 +270,12 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.switch_city:
                 Intent intent = new Intent(this, ChooseAreaActivity.class);
-                intent.putExtra("from_weather_activity", true);
+                //intent.putExtra("from_weather_activity", true);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.refresh_weather:
-                publishText.setText("同步中...");
+                publishText.setText("同步中...==");
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 String weatherCode = prefs.getString("weather_code", "");
                 if (!TextUtils.isEmpty(weatherCode)) {

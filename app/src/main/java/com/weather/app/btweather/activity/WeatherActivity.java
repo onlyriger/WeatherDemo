@@ -11,11 +11,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.socks.library.KLog;
 import com.weather.app.btweather.R;
 import com.weather.app.btweather.db.DatabaseHelper;
@@ -23,6 +25,8 @@ import com.weather.app.btweather.service.AutoUpdateService;
 import com.weather.app.btweather.util.HttpCallbackListener;
 import com.weather.app.btweather.util.HttpUtil;
 import com.weather.app.btweather.util.Utility;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.File;
@@ -70,6 +74,14 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
      */
     SQLiteDatabase db = null;
 
+    Boolean flag = true;
+    String address_str = null;
+    private String cityName = null;
+    private String publishTime = null;
+    private String nowTime = null;
+    private String weatherDesp = null;
+    private String temp1 = null;
+    private String temp2 = null;
     public static final String DATABASE_FILENAME = "citychina1";
     public static final String PACKAGE_NAME = "com.weather.db1";
     public static final String DATABASE_PATH = "/data" + Environment.getDataDirectory().getAbsolutePath() +
@@ -101,9 +113,14 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             weatherInfoLayout.setVisibility(View.INVISIBLE);
             cityNameText.setVisibility(View.INVISIBLE);
             KLog.v(TAG, "33333");
-            queryWeatherCode(countyCode);
+           // queryWeatherCode(countyCode);
+
+            address_str = initWeatherData(countyCode);
+            queryWeatherChangeInfo(address_str);
+            //queryWeatherInfo(address_str);
             KLog.v(TAG, "44444");
-        } else {
+        } else
+        {
             // 没有县级代号时就直接显示本地天气
             showWeather();
         }
@@ -114,16 +131,17 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
      */
     private void queryWeatherCode(String countyCode) {
         String address = "http://www.weather.com.cn/data/list3/city" + countyCode + ".xml";
-        KLog.v(TAG, "ADDRESS = " + address);
+        queryFromServer(address, "countyCode");
 
-        //queryFromServer(address, "countyCode");
-        initWeatherData(countyCode);
+        //String address_str = initWeatherData(countyCode);
+        //queryFromServer(address_str,"countyCode");
+
     }
 
     /**
      * 从数据库读取县对应的天气代号查询天气信息
      */
-    private void initWeatherData(final String wt_id) {
+    private String initWeatherData(final String wt_id) {
 //        String weatherdata = null;
 //        DatabaseHelper helper = new DatabaseHelper(WeatherActivity.this, "citychina");
 //        SQLiteDatabase sqLiteDatabase = helper.getReadableDatabase();
@@ -150,9 +168,13 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             }
         }
         KLog.v(TAG,"weatherdata ============ " + weatherdata);
-        String wtData = (String) weatherdata;
-        queryWeatherInfo(wtData);
+
+        String result_str = weatherdata;
+        //queryWeatherInfo(wtData);
+        //String address = "http://www.weather.com.cn/data/cityinfo/" + "101040800" + ".html";
+        //queryFromServer(address,"weatherCode");
         KLog.v(TAG,"end ====  ");
+        return result_str;
     }
 
     private void copyDataBase(){
@@ -199,8 +221,8 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
      * 查询天气代号对应的天气
      */
     private void queryWeatherInfo(String weatherCode) {
-        String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
-        //String address = "http://www.weather.com.cn/adat/cityinfo/" + weatherCode + ".html";
+       // String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
+        String address = "http://www.weather.com.cn/adat/cityinfo/" + weatherCode + ".html";
         KLog.v(TAG,"query address = " + address);
         queryFromServer(address, "weatherCode");
         KLog.v(TAG,"queryFromServer end");
@@ -217,10 +239,13 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                 if ("countyCode".equals(type)) {
                     // 从服务器返回的数据中解析出天气代号
                     String[] array = response.split("\\|");
-                    if (array != null && array.length == 2) {
+                    if (array != null && array.length == 2)
+                    {
                         String weatherCode = array[1];
                         queryWeatherInfo(weatherCode);
-                    } else if ("weatherCode".equals(type)) {
+
+                    }
+                    else if ("weatherCode".equals(type)) {
                         KLog.v("query from server onFinish 222222");
                         KLog.v("weather start");
                         Utility.handleWeatherResponse(WeatherActivity.this, response);
@@ -247,6 +272,83 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         });
     }
 
+    private void queryWeatherChangeInfo(String str) {
+        String address = "http://www.weather.com.cn/adat/cityinfo/" + str + ".html";
+        Log.v(TAG,"address = " + address);
+        queryWeather(address);
+
+    }
+
+    /**
+     *
+     */
+    private void queryWeather(final String address) {
+        HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                try {
+                    Log.v(TAG,"JSONObject begin");
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONObject weatherinfo = jsonObject.getJSONObject("weatherinfo");
+                    cityName = weatherinfo.getString("city");
+                    KLog.v(TAG,"cityName === " + cityName);
+                    publishTime = weatherinfo.getString("ptime");
+                    KLog.v(TAG,"publishTime === " + publishTime);
+                    weatherDesp = weatherinfo.getString("weather");
+                    KLog.v(TAG,"weatherDesp === " + weatherDesp);
+                    temp1 = weatherinfo.getString("temp1");
+                    KLog.v(TAG,"temp1 === " + temp1);
+                    temp2 = weatherinfo.getString("temp2");
+                    KLog.v(TAG,"temp2 === " + temp2);
+                    SharedPreferences prefs = getSharedPreferences("weathter_data",WeatherActivity.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                   editor.putString("city",cityName);
+                    editor.putString("ptime",publishTime);
+                    editor.putString("weather",weatherDesp);
+                    editor.putString("temp1",temp1);
+                    editor.putString("temp2",temp2);
+                    editor.commit();
+                    //showChangeWt();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showChangeWt();
+                }
+            });
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.v(TAG,"e" +e.toString());
+                      //  Toast.makeText(WeatherActivity.this,"加载失败",Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
+    }
+
+    private void showChangeWt() {
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefs = getSharedPreferences("weathter_data",WeatherActivity.MODE_PRIVATE);
+
+        cityNameText.setText(prefs.getString("city",""));
+        temp1Text.setText(prefs.getString("temp1",""));
+        temp2Text.setText(prefs.getString("temp2",""));
+        weatherDespText.setText(prefs.getString("weather",""));
+        publishText.setText("今天" + prefs.getString("ptime","") + "发布");
+        weatherInfoLayout.setVisibility(View.VISIBLE);
+        cityNameText.setVisibility(View.VISIBLE);
+    }
+
+
     /**
      * 从SharedPreferences文件中读取存储的天气信息，并显示到界面上
      */
@@ -266,16 +368,25 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, ChooseAreaActivity.class);
+        intent.putExtra("from_weather_activity", true);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.switch_city:
                 Intent intent = new Intent(this, ChooseAreaActivity.class);
-                //intent.putExtra("from_weather_activity", true);
+                intent.putExtra("from_weather_activity", true);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.refresh_weather:
-                publishText.setText("同步中...==");
+                publishText.setText("同步中...");
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 String weatherCode = prefs.getString("weather_code", "");
                 if (!TextUtils.isEmpty(weatherCode)) {

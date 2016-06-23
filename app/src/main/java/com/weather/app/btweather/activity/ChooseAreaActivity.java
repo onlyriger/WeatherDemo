@@ -70,6 +70,7 @@ public class ChooseAreaActivity extends Activity {
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity",false);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         // 已经选择了城市且不是从WeatherActivity跳转过来,才会直接跳转到WeatherActivity

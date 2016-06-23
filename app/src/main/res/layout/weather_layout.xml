@@ -14,7 +14,7 @@
             android:layout_height="30dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="12dp"
-            android:background="@drawable/home2"
+            android:background="@drawable/home"
             android:id="@+id/switch_city"/>
 
         <TextView
@@ -32,7 +32,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginRight="16dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/refresh2"
+            android:background="@drawable/refresh"
             android:id="@+id/refresh_weather"/>
     </RelativeLayout>
 

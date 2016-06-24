@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -100,14 +101,22 @@ public class ChooseAreaActivity extends Activity {
                         String countyCode = countyList.get(position).getCountyCode();
                         Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
                         intent.putExtra("county_code",countyCode);
-                        startActivity(intent);
-                        finish();
+                        startActivityForResult(intent,1);
                     }
                 }
         });
         queryProvinces();   // 加载省级数据
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode){
+            case RESULT_OK:
+                break;
+            default:
+                break;
+        }
+    }
     /**
      * 查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询
      */
@@ -123,7 +132,6 @@ public class ChooseAreaActivity extends Activity {
             titleText.setText("中国");
             currentLevel = LEVEL_PROVINCE;
         } else {
-            KLog.v(TAG,"111111");
             queryFromServer(null,"province");
         }
     }
@@ -250,11 +258,13 @@ public class ChooseAreaActivity extends Activity {
         } else if (currentLevel == LEVEL_CITY){
             queryProvinces();
         } else {
-            if (isFromWeatherActivity){
-                Intent intent = new Intent(this,WeatherActivity.class);
-                startActivity(intent);
-            }
+//            if (isFromWeatherActivity){
+//                Intent intent = new Intent(this,WeatherActivity.class);
+//                startActivity(intent);
+//            }
             finish();
         }
     }
+
+
 }

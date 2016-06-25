@@ -47,22 +47,22 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     private static final String TAG = WeatherActivity.class.getSimpleName();
     private LinearLayout weatherInfoLayout;
 
-    //用于显示城市名
+    // 用于显示城市名
     private TextView cityNameText;
 
-    //用于显示发布时间
+    // 用于显示发布时间
     private TextView publishText;
 
-    //用于显示天气描述信息
+    // 用于显示天气描述信息
     private TextView weatherDespText;
 
-    //用于显示气温1
+    // 用于显示气温1
     private TextView temp1Text;
 
-    //用于显示气温2
+    // 用于显示气温2
     private TextView temp2Text;
 
-    //用于显示当期日期
+    // 用于显示当期日期
     private TextView currentDateText;
 
     /**
@@ -76,7 +76,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     private Button refreshWeather;
 
     /**
-     * 数据库
+     * SQLite数据库
      */
     SQLiteDatabase db = null;
 
@@ -95,11 +95,11 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             "/" + PACKAGE_NAME;
 
     /**
-     * 枚举各种天气
+     * 枚举各种天气情况
      */
     private enum WeatherKind {
         cloudy, fog, hailstone, light_rain, moderte_rain, overcast, rain_snow, sand_storm, rainstorm,
-        shower_rain, snow, sunny, thundershower;
+        shower_rain, snow, sunny, thundershower,allwt;
     }
 
     private static Map<String,WeatherKind> weather_kind = new HashMap<String,WeatherKind>();
@@ -117,8 +117,63 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         weather_kind.put("小雪",WeatherKind.snow);
         weather_kind.put("晴",WeatherKind.sunny);
         weather_kind.put("雷阵雨",WeatherKind.thundershower);
+        weather_kind.put("晴转阴",WeatherKind.allwt);
+        weather_kind.put("晴转多云",WeatherKind.allwt);
+        weather_kind.put("晴转小雨",WeatherKind.allwt);
+        weather_kind.put("晴转中雨",WeatherKind.allwt);
+        weather_kind.put("晴转大雨",WeatherKind.allwt);
+        weather_kind.put("晴转阵雨",WeatherKind.allwt);
+        weather_kind.put("晴转雷阵雨",WeatherKind.allwt);
+        weather_kind.put("晴转小雪",WeatherKind.allwt);
+        weather_kind.put("晴转中雪",WeatherKind.allwt);
+        weather_kind.put("晴转大雪",WeatherKind.allwt);
+        weather_kind.put("阴转晴",WeatherKind.allwt);
+        weather_kind.put("阴转多云",WeatherKind.allwt);
+        weather_kind.put("阴转小雨",WeatherKind.allwt);
+        weather_kind.put("阴转中雨",WeatherKind.allwt);
+        weather_kind.put("阴转大雨",WeatherKind.allwt);
+        weather_kind.put("阴转阵雨",WeatherKind.allwt);
+        weather_kind.put("阴转雷阵雨",WeatherKind.allwt);
+        weather_kind.put("阴转小雪",WeatherKind.allwt);
+        weather_kind.put("阴转中雪",WeatherKind.allwt);
+        weather_kind.put("阴转大雪",WeatherKind.allwt);
+        weather_kind.put("多云转晴",WeatherKind.allwt);
+        weather_kind.put("多云转阴",WeatherKind.allwt);
+        weather_kind.put("多云转小雨",WeatherKind.allwt);
+        weather_kind.put("多云转中雨",WeatherKind.allwt);
+        weather_kind.put("多云转大雨",WeatherKind.allwt);
+        weather_kind.put("多云转阵雨",WeatherKind.allwt);
+        weather_kind.put("多云转雷阵雨",WeatherKind.allwt);
+        weather_kind.put("多云转小雪",WeatherKind.allwt);
+        weather_kind.put("多云转中雪",WeatherKind.allwt);
+        weather_kind.put("多云转大雪",WeatherKind.allwt);
+        weather_kind.put("小雨转晴",WeatherKind.allwt);
+        weather_kind.put("小雨转阴",WeatherKind.allwt);
+        weather_kind.put("小雨转多云",WeatherKind.allwt);
+        weather_kind.put("小雨转中雨",WeatherKind.allwt);
+        weather_kind.put("小雨转大雨",WeatherKind.allwt);
+        weather_kind.put("中雨转小雨",WeatherKind.allwt);
+        weather_kind.put("中雨转大雨",WeatherKind.allwt);
+        weather_kind.put("大雨转中雨",WeatherKind.allwt);
+        weather_kind.put("大雨转小雨",WeatherKind.allwt);
+        weather_kind.put("阵雨转小雨",WeatherKind.allwt);
+        weather_kind.put("阵雨转中雨",WeatherKind.allwt);
+        weather_kind.put("阵雨转多云",WeatherKind.allwt);
+        weather_kind.put("阵雨转晴",WeatherKind.allwt);
+        weather_kind.put("阵雨转阴",WeatherKind.allwt);
+        weather_kind.put("中雪转小雪",WeatherKind.allwt);
+        weather_kind.put("中雪转大雪",WeatherKind.allwt);
+        weather_kind.put("小雪转大雪",WeatherKind.allwt);
+        weather_kind.put("小雪转中雪",WeatherKind.allwt);
+        weather_kind.put("小雪转晴",WeatherKind.allwt);
+        weather_kind.put("小雪转阴",WeatherKind.allwt);
+        weather_kind.put("小雪转多云",WeatherKind.allwt);
+        weather_kind.put("大雪转小雪",WeatherKind.allwt);
+        weather_kind.put("大雪转中雪",WeatherKind.allwt);
+        weather_kind.put("雾转小雨",WeatherKind.allwt);
+        weather_kind.put("雾转中雨",WeatherKind.allwt);
+        weather_kind.put("雾转大雨",WeatherKind.allwt);
     }
-
 
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -142,7 +197,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             publishText.setText("同步中...");
             weatherInfoLayout.setVisibility(View.INVISIBLE);
             cityNameText.setVisibility(View.INVISIBLE);
-            //queryWeatherCode(countyCode);
             address_str = initWeatherData(countyCode);
             queryWeatherChangeInfo(address_str);
         } else {
@@ -167,9 +221,8 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         String result_str = null;
         String selection = "CITY_ID=?" ;
         String[] selectionArgs = new  String[]{ wt_id };
-        //导入外部数据库复制到手机内存
+        // 导入外部数据库复制到手机内存
         copyDataBase();
-
         Cursor cursor = db.query("city_table",new String[]{"WEATHER_ID"},selection, selectionArgs, null, null, null);
         while (cursor.moveToNext()){
             weatherdata = cursor.getString(0);
@@ -204,6 +257,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            // 根据数据库文件路径打开数据库
             db = SQLiteDatabase.openOrCreateDatabase(
                     weatherfileName, null);
         } catch (Exception e) {
@@ -215,7 +269,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
      * 查询天气代号对应的天气
      */
     private void queryWeatherInfo(String weatherCode) {
-       // String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
         String address = "http://www.weather.com.cn/adat/cityinfo/" + weatherCode + ".html";
         queryFromServer(address, "weatherCode");
     }
@@ -255,7 +308,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                         publishText.setText("同步失败");
                     }
                 });
-
             }
         });
     }
@@ -288,7 +340,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                     editor.putString("temp1", temp1);
                     editor.putString("temp2", temp2);
                     editor.commit();
-                    Utility.handleWeatherResponse(WeatherActivity.this, response);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -310,19 +361,21 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
      * 读取天气信息显示到界面上
      */
     private void showChangeWt() {
-        SharedPreferences prefs = getSharedPreferences("weathter_data",WeatherActivity.MODE_PRIVATE);
-        cityNameText.setText(prefs.getString("city",""));
-        temp1Text.setText(prefs.getString("temp1",""));
-        temp2Text.setText(prefs.getString("temp2",""));
-        weatherDespText.setText(prefs.getString("weather",""));
-        publishText.setText("今天" + prefs.getString("ptime","") + "发布");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SharedPreferences prefs = getSharedPreferences("weathter_data", WeatherActivity.MODE_PRIVATE);
+        cityNameText.setText(prefs.getString("city", ""));
+        temp1Text.setText(prefs.getString("temp1", ""));
+        temp2Text.setText(prefs.getString("temp2", ""));
+        weatherDespText.setText(prefs.getString("weather", ""));
+        publishText.setText("今天" + prefs.getString("ptime", "") + "发布");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
         String date = sdf.format(new java.util.Date());
         nowTime = date;
         currentDateText.setText(nowTime);
         WeatherKind myWeather = weather_kind.get(weatherDesp);
         if (myWeather != null) {
             changeBackground(myWeather);
+        } else {
+            changeBackground(WeatherKind.allwt);
         }
         currentDateText.setVisibility(View.VISIBLE);
         weatherInfoLayout.setVisibility(View.VISIBLE);
@@ -341,13 +394,15 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         temp2Text.setText(prefs.getString("temp2", ""));
         weatherDespText.setText(prefs.getString("weather_desp", ""));
         publishText.setText("今天" + prefs.getString("publish_time", "") + "发布");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
         String date = sdf.format(new java.util.Date());
         nowTime = date;
         currentDateText.setText(nowTime);
         WeatherKind myWeather = weather_kind.get(weatherDesp);
         if (myWeather != null) {
             changeBackground(myWeather);
+        } else {
+            changeBackground(WeatherKind.allwt);
         }
         currentDateText.setVisibility(View.VISIBLE);
         weatherInfoLayout.setVisibility(View.VISIBLE);
@@ -401,6 +456,9 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             case thundershower:
                 view.setBackgroundResource(R.drawable.thundershower);
                 break;
+            case allwt:
+                view.setBackgroundResource(R.drawable.allwt);
+                break;
             default:
                 break;
         }
@@ -429,7 +487,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         String weatherCode = prefs.getString("weather_code", "");
                         if (!TextUtils.isEmpty(weatherCode)) {
-                            //queryWeatherInfo(weatherCode);
                             queryWeatherChangeInfo(weatherCode);
                         }
                         else {

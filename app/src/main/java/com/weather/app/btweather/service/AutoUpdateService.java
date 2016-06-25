@@ -46,7 +46,6 @@ public class AutoUpdateService extends Service {
     private void updateWeather(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherCode = prefs.getString("weather_code","");
-        //String address = "http://www.weather.com.cn/data/cityinfo/" + "weatherCode" + ".html";
         String address = "http://www.weather.com.cn/adat/cityinfo/" + "weatherCode" + ".html";
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override

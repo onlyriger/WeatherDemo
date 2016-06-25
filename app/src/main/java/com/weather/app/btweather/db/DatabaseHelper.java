@@ -33,7 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
      */
 
     public DatabaseHelper(Context context, String name, CursorFactory factory, int version) {
-        //必须通过super调用父类当中的构造函数
+        // 必须通过super调用父类当中的构造函数
         super(context, name, factory, version);
     }
 

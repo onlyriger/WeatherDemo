@@ -33,7 +33,7 @@ public class Utility {
                     Province province = new Province();
                     province.setProvinceCode(array[0]);
                     province.setProvinceName(array[1]);
-                    //将解析出来的数据存储到Province类
+                    // 将解析出来的数据存储到Province类
                     btWeatherDB.saveProvince(province);
                 }
                 return true;
@@ -55,7 +55,7 @@ public class Utility {
                     city.setCityCode(array[0]);
                     city.setCityName(array[1]);
                     city.setProvinceId(provinceId);
-                    //将解析出来的数据存储到City类
+                    // 将解析出来的数据存储到City类
                     btWeatherDB.saveCity(city);
                 }
                 return true;

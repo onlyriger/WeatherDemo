@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.socks.library.KLog;
+import com.socks.library.klog.JsonLog;
 import com.weather.app.btweather.R;
 import com.weather.app.btweather.db.DatabaseHelper;
 import com.weather.app.btweather.service.AutoUpdateService;
@@ -223,6 +224,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         String[] selectionArgs = new  String[]{ wt_id };
         // 导入外部数据库复制到手机内存
         copyDataBase();
+
         Cursor cursor = db.query("city_table",new String[]{"WEATHER_ID"},selection, selectionArgs, null, null, null);
         while (cursor.moveToNext()){
             weatherdata = cursor.getString(0);
@@ -260,6 +262,11 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             // 根据数据库文件路径打开数据库
             db = SQLiteDatabase.openOrCreateDatabase(
                     weatherfileName, null);
+            if (db != null) {
+                KLog.v(TAG,"db build success!");
+            } else {
+                KLog.v(TAG,"db build failed!");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -283,8 +290,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                 if ("countyCode".equals(type)) {
                     // 从服务器返回的数据中解析出天气代号
                     String[] array = response.split("\\|");
-                    if (array != null && array.length == 2)
-                    {
+                    if (array != null && array.length == 2) {
                         String weatherCode = array[1];
                         queryWeatherInfo(weatherCode);
                     }

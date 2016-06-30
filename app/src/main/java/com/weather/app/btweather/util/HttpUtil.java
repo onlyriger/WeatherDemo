@@ -1,6 +1,7 @@
 package com.weather.app.btweather.util;
 
 import android.text.TextUtils;
+import com.socks.library.KLog;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -37,7 +38,7 @@ public class HttpUtil {
                 }catch (Exception e){
                     if (listener != null){
                         // 回调onError()方法
-                        listener.onError(e);
+                        //listener.onError(e);
                     }
                 }finally {
                     if (connection != null){

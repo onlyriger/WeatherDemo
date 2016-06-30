@@ -39,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Delayed;
+import java.util.concurrent.Exchanger;
 
 /**
  * Created by riger on 2016/6/16.
@@ -352,7 +353,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                             showChangeWt();
                         }
                     });
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
